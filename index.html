@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+
+<html lang="fi">
+<head>
+    <meta charset="UTF-8" />
+    <title>Pistelaskutaulukko</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="author" content="Markus2540" />
+    <link rel="stylesheet" href="styles/stylesheet.css" />
+    <script defer src="scripts/main.js"></script>
+</head>
+<body>
+    <main>
+        <h1>Pistetaulukko <span id="instructions"> ? </span></h1>
+        <label for="trackselector">Valitse rata:</label>
+        <select id="trackselector">
+            <option selected value="none">Valitse rata</option>
+            <optgroup label="City1">
+                <option value="track1">Track 1</option>
+                <option value="track2">Track 2</option>
+            </optgroup>
+            <optgroup label="City2">
+                <option value="track3">Track 3</option>
+                <option value="track4">Track 4</option>
+            </optgroup>
+        </select>
+        <label for="es">es</label>
+        <input type="radio" name="trackSelectorDisabledEnabled" value="es" id="es" checked />
+        <label for="ds">ds</label>
+        <input type="radio" name="trackSelectorDisabledEnabled" value="ds" id="ds" />
+        <br />
+        <br />
+        <input type="button" id="addPlayer" value="Lisää pelaaja" />
+        <br />
+        <br />
+        <div class="scoreboarddiv">
+            <table class="scoreboard">
+            </table>
+        </div>
+
+        <div class="clearfix">
+        <div class="modalBox">
+            <canvas id="leftArrow" width="35" height="250"></canvas>
+            <canvas id="closeModalBoxLeft" width="35" height="35"></canvas>
+            <canvas id="closeModalBoxRight" width="35" height="35"></canvas>
+            <canvas id="rightArrow" width="35" height="250"></canvas>
+            <div id="modalBoxContent">
+            </div>
+        </div>
+        </div>
+
+
+        <div class="history">
+            <button class="accordion">Historia</button>
+            <div class="previousresults">
+            </div>
+        </div>
+        <div class="darkbackground">
+            <div id="infobox">
+                <p>Valitse rata, avaa/lukitse valitsin es/ds radionappien avulla, lisää pelaajat ja 
+                avaa pistemanipuloija klikkaamalla pelaajan radan kohdalla olevaa heittomäärää. 
+                Radalta toiselle voit siirtyä nuolisymboleilla ja manipulointi-ikkunan voit sulkea x-merkistä. 
+                Yhteenvedon näet viimeisen radan jälkeisellä sivulla, jossa voit myös tallentaa pelaamasi kierroksen.</p>
+                <input type="button" id="hideinfobox" value="OK" />
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>
