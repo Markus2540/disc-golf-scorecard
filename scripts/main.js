@@ -130,7 +130,8 @@ window.onload = function () {
                 }
                 today = new Date();
                 date = `${(today.getDate())}/${(today.getMonth() + 1)}/${today.getFullYear()}`;
-                timeStart = `${today.getHours()}:${today.getMinutes()}`;
+                let startMinutes = (today.getMinutes() < 10? "0": "") + today.getMinutes();
+                timeStart = `${today.getHours()}:${startMinutes}`;
                 startTime = Date.now();
 
                 buildScoreboard();
@@ -204,8 +205,10 @@ window.onload = function () {
             paragraph.insertAdjacentElement("beforeend", plusBtn);
             minusBtn.textContent = "-";
             plusBtn.textContent = "+";
-            minusBtn.style.marginRight = "10px";
-            plusBtn.style.marginLeft = "10px";
+            minusBtn.style.marginRight = "15px";
+            minusBtn.className = "manipulatorBtn";
+            plusBtn.style.marginLeft = "15px";
+            plusBtn.className = "manipulatorBtn";
             var x = document.querySelector('.scoreboard').rows.length;
 
             plusBtn.addEventListener('click', function mBPlusBtn() {
@@ -266,12 +269,12 @@ window.onload = function () {
                         modalBoxContent.appendChild(div).className="titleDiv";
                         h2.textContent = `Väylä ${columnIndex}`;
 
-                        function keksiParempiNimi() {
+                        function forAllPlayers() {
                             for (let j = 0; j < (newBodyRef.rows.length - 2); j++) {
                                 buildLaneScoreManipulator(j);
                             }
                         }
-                        keksiParempiNimi();
+                        forAllPlayers();
 
                         if (arrowEventListenersAdded === false) {
                             leftArrow.addEventListener('click', function mBLeftArrow() {
@@ -290,7 +293,7 @@ window.onload = function () {
                                     div.appendChild(h2);
                                     modalBoxContent.appendChild(div).className = "titleDiv";
                                     h2.textContent = `Väylä ${columnIndex}`;
-                                    keksiParempiNimi();
+                                    forAllPlayers();
                                 }*/
                                 columnIndex--;
                                 if (columnIndex < 1) { columnIndex = 1; }
@@ -299,7 +302,7 @@ window.onload = function () {
                                 div.appendChild(h2);
                                 modalBoxContent.appendChild(div).className = "titleDiv";
                                 h2.textContent = `Väylä ${columnIndex}`;
-                                keksiParempiNimi();
+                                forAllPlayers();
                             });
                             rightArrow.addEventListener('click', function mBRightArrow() {
                                 if (columnIndex < trackToBuild.lanes) {
@@ -309,7 +312,7 @@ window.onload = function () {
                                     div.appendChild(h2);
                                     modalBoxContent.appendChild(div).className = "titleDiv";
                                     h2.textContent = `Väylä ${columnIndex}`;
-                                    keksiParempiNimi();
+                                    forAllPlayers();
                                 } else {
                                     columnIndex = trackToBuild.lanes + 1;
                                     modalBoxContent.innerHTML = "";
@@ -332,8 +335,9 @@ window.onload = function () {
                                     saveBtn.id = "tallennusnappi";
                                     saveBtn.textContent = "Tallenna";
                                     saveBtn.addEventListener('click', () => {
-                                        stopTime = new Date();
-                                        timeEnd = `${stopTime.getHours()}:${stopTime.getMinutes()}`;
+                                        let stopTime = new Date();
+                                        let endMinutes = (stopTime.getMinutes() < 10? "0": "") + stopTime.getMinutes();
+                                        timeEnd = `${stopTime.getHours()}:${endMinutes}`;
                                         endTime = Date.now();
                                         roundTime = endTime - startTime;
                                         nmbrOfLanes = trackToBuild.lanes;

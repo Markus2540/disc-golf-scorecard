@@ -193,3 +193,8 @@ table {
     left: 50%;
     transform: translateX(-50%);
 }
+.manipulatorBtn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
