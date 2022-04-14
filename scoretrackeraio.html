@@ -279,14 +279,9 @@ table {
     const modalBoxContent = document.querySelector('#modalBoxContent');
     const previousResults = document.querySelector('.previousresults');
     const darkBackground = document.querySelector('.darkbackground');
-    let arrowEventListenersAdded = false;
-    /*
-    Prevents arrowEventListeners from stacking. If this was true and the related if-clause were 
-    true, pressing the left and right buttons on the scoreboard manipulator would skip as many 
-    pages as you have opened the scoreboard manipulator.
-    */
+    const titleDiv = document.querySelector('.titleDiv');
     let parYht, today, date, timeStart, timeEnd, startTime, endTime, roundTime, trackName,
-        scores, players, nmbrOfLanes, trackToBuild, selectedTrack;
+        scores, players, nmbrOfLanes, trackToBuild, selectedTrack, newBodyRef, columnIndex;
 
     const tracks = [
         {
@@ -465,8 +460,6 @@ table {
         scoreBoard.appendChild(tblBody);
     }
 
-    let columnIndex;
-
     function totalThrows() {
         if (newBodyRef.rows.length > 2) {
             for (let i = 0; i < newBodyRef.rows.length - 2; i++) {
@@ -523,8 +516,105 @@ table {
         });
     }
 
+    function forAllPlayers() {
+        for (let j = 0; j < (newBodyRef.rows.length - 2); j++) {
+            buildLaneScoreManipulator(j);
+        }
+    }
 
-    let newBodyRef;
+    function mBLeftArrow() {
+        /*if (columnIndex <= 1) {
+            columnIndex = 0;
+            console.log(`Nimisivu ja columnIndex = ${columnIndex}`);
+            modalBoxContent.innerHTML = "";
+            titleDiv.innerHTML = "";
+            div.appendChild(h2);
+            modalBoxContent.appendChild(div).className = "titleDiv";
+            h2.textContent = `Pelaajat: `;
+        } else {
+            columnIndex--;
+            modalBoxContent.innerHTML = "";
+            titleDiv.innerHTML = "";
+            div.appendChild(h2);
+            modalBoxContent.appendChild(div).className = "titleDiv";
+            h2.textContent = `Väylä ${columnIndex}`;
+            forAllPlayers();
+        }*/
+        columnIndex--;
+        if (columnIndex < 1) { columnIndex = 1; }
+        modalBoxContent.innerHTML = "";
+        //titleDiv.innerHTML = "";
+        const div = document.createElement('div');
+        const h2 = document.createElement('h2');
+        div.appendChild(h2);
+        modalBoxContent.appendChild(div).className = "titleDiv";
+        h2.textContent = `Väylä ${columnIndex}`;
+        forAllPlayers();
+    }
+
+    function mBRightArrow() {
+        const div = document.createElement('div');
+        const para = document.createElement('p');
+        const h2 = document.createElement('h2');
+        if (columnIndex < trackToBuild.lanes) {
+            columnIndex++;
+            modalBoxContent.innerHTML = "";
+            //titleDiv.innerHTML = "";
+            
+            div.appendChild(h2);
+            modalBoxContent.appendChild(div).className = "titleDiv";
+            h2.textContent = `Väylä ${columnIndex}`;
+            forAllPlayers();
+        } else {
+            columnIndex = trackToBuild.lanes + 1;
+            modalBoxContent.innerHTML = "";
+            //titleDiv.innerHTML = "";
+            div.appendChild(h2);
+            div.appendChild(para);
+            modalBoxContent.appendChild(div).className = "titleDiv";
+            h2.textContent = `Tulokset:`;
+            para.textContent = `Kierroksen par-tulos: ${parYht}`;
+            if (scoreBoard.rows.length > 2) {
+                
+                for (let i = 0; i < (newBodyRef.rows.length - 2); i++) {
+                    const para = document.createElement('p');
+                    para.textContent = `${newBodyRef.rows[2 + i].cells[0].innerHTML} läpäisi radan 
+                    ${newBodyRef.rows[2 + i].cells[trackToBuild.lanes + 1].innerHTML} heitolla!`;
+                    modalBoxContent.appendChild(para);
+                }
+            }
+            const saveBtn = document.createElement('button');
+            modalBoxContent.appendChild(saveBtn);
+            saveBtn.id = "tallennusnappi";
+            saveBtn.textContent = "Tallenna";
+            saveBtn.addEventListener('click', () => {
+                let stopTime = new Date();
+                let endMinutes = (stopTime.getMinutes() < 10? "0": "") + stopTime.getMinutes();
+                timeEnd = `${stopTime.getHours()}:${endMinutes}`;
+                endTime = Date.now();
+                roundTime = endTime - startTime;
+                nmbrOfLanes = trackToBuild.lanes;
+                players = [];
+                for (let i = 0; i < (newBodyRef.rows.length - 2); i++) {
+                    players.push(newBodyRef.rows[2 + i].cells[0].innerHTML);
+                }
+                scores = [];
+                for (let i = 0; i < newBodyRef.rows.length - 2; i++) {
+                    let tempScore = [];
+                    for (let j = 1; j < newBodyRef.rows[newBodyRef.rows.length - 2].cells.length; j++) {
+                        let scoreToAdd = newBodyRef.rows[2 + i].cells[j].innerHTML;
+                        scoreToAdd = Number(scoreToAdd);
+                        tempScore.push(scoreToAdd);
+                    }
+                    scores.push(tempScore);
+                    tempScore = [];
+                }
+                trackName = trackToBuild.trackName;
+                saveScore();
+            });
+        }
+    }
+    
     addPlayer.addEventListener('click', () => {
         let playerToAdd = window.prompt('Anna lisättävän pelaajan nimi: ');
         if (playerToAdd === "") {
@@ -560,104 +650,8 @@ table {
                     modalBoxContent.appendChild(div).className="titleDiv";
                     h2.textContent = `Väylä ${columnIndex}`;
 
-                    function forAllPlayers() {
-                        for (let j = 0; j < (newBodyRef.rows.length - 2); j++) {
-                            buildLaneScoreManipulator(j);
-                        }
-                    }
                     forAllPlayers();
 
-                    if (arrowEventListenersAdded === false) {
-                        leftArrow.addEventListener('click', function mBLeftArrow() {
-                            /*if (columnIndex <= 1) {
-                                columnIndex = 0;
-                                console.log(`Nimisivu ja columnIndex = ${columnIndex}`);
-                                modalBoxContent.innerHTML = "";
-                                titleDiv.innerHTML = "";
-                                div.appendChild(h2);
-                                modalBoxContent.appendChild(div).className = "titleDiv";
-                                h2.textContent = `Pelaajat: `;
-                            } else {
-                                columnIndex--;
-                                modalBoxContent.innerHTML = "";
-                                titleDiv.innerHTML = "";
-                                div.appendChild(h2);
-                                modalBoxContent.appendChild(div).className = "titleDiv";
-                                h2.textContent = `Väylä ${columnIndex}`;
-                                forAllPlayers();
-                            }*/
-                            columnIndex--;
-                            if (columnIndex < 1) { columnIndex = 1; }
-                            modalBoxContent.innerHTML = "";
-                            titleDiv.innerHTML = "";
-                            div.appendChild(h2);
-                            modalBoxContent.appendChild(div).className = "titleDiv";
-                            h2.textContent = `Väylä ${columnIndex}`;
-                            forAllPlayers();
-                        });
-                        rightArrow.addEventListener('click', function mBRightArrow() {
-                            if (columnIndex < trackToBuild.lanes) {
-                                columnIndex++;
-                                modalBoxContent.innerHTML = "";
-                                titleDiv.innerHTML = "";
-                                div.appendChild(h2);
-                                modalBoxContent.appendChild(div).className = "titleDiv";
-                                h2.textContent = `Väylä ${columnIndex}`;
-                                forAllPlayers();
-                            } else {
-                                columnIndex = trackToBuild.lanes + 1;
-                                modalBoxContent.innerHTML = "";
-                                titleDiv.innerHTML = "";
-                                div.appendChild(h2);
-                                div.appendChild(para);
-                                modalBoxContent.appendChild(div).className = "titleDiv";
-                                h2.textContent = `Tulokset:`;
-                                para.textContent = `Kierroksen par-tulos: ${parYht}`;
-                                if (scoreBoard.rows.length > 2) {
-                                    
-                                    for (let i = 0; i < (newBodyRef.rows.length - 2); i++) {
-                                        const para = document.createElement('p');
-                                        para.textContent = `${newBodyRef.rows[2 + i].cells[0].innerHTML} läpäisi radan 
-                                        ${newBodyRef.rows[2 + i].cells[trackToBuild.lanes + 1].innerHTML} heitolla!`;
-                                        modalBoxContent.appendChild(para);
-                                    }
-                                }
-                                const saveBtn = document.createElement('button');
-                                modalBoxContent.appendChild(saveBtn);
-                                saveBtn.id = "tallennusnappi";
-                                saveBtn.textContent = "Tallenna";
-                                saveBtn.addEventListener('click', () => {
-                                    let stopTime = new Date();
-                                    let endMinutes = (stopTime.getMinutes() < 10? "0": "") + stopTime.getMinutes();
-                                    timeEnd = `${stopTime.getHours()}:${endMinutes}`;
-                                    endTime = Date.now();
-                                    roundTime = endTime - startTime;
-                                    nmbrOfLanes = trackToBuild.lanes;
-                                    players = [];
-                                    for (let i = 0; i < (newBodyRef.rows.length - 2); i++) {
-                                        players.push(newBodyRef.rows[2 + i].cells[0].innerHTML);
-                                    }
-                                    scores = [];
-                                    for (let i = 0; i < newBodyRef.rows.length - 2; i++) {
-                                        let tempScore = [];
-                                        for (let j = 1; j < newBodyRef.rows[newBodyRef.rows.length - 2].cells.length; j++) {
-                                            let scoreToAdd = newBodyRef.rows[2 + i].cells[j].innerHTML;
-                                            scoreToAdd = Number(scoreToAdd);
-                                            tempScore.push(scoreToAdd);
-                                        }
-                                        scores.push(tempScore);
-                                        tempScore = [];
-                                    }
-                                    trackName = trackToBuild.trackName;
-                                    saveScore();
-                                });
-                            }
-                        });
-                        arrowEventListenersAdded = true;
-                        const titleDiv = document.querySelector('.titleDiv');
-                    } else {
-                        //console.log('No need to add arrowEventListeners the second time.');
-                    }
                     trackSelector.addEventListener('change', function deleteEventListeners() {
                         for (let i = 0; i < (newBodyRef.rows.length); i++) {
                             newBodyRef.deleteRow(-1);
@@ -814,6 +808,9 @@ table {
         darkBackground.style.display = "none";
         infoBox.style.display = "none";
     });
+
+    leftArrow.addEventListener('click', mBLeftArrow);
+    rightArrow.addEventListener('click', mBRightArrow);
 </script>
 
 </body>
